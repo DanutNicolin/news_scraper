@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Optional
 
 import sqlite3
 import datetime
@@ -30,7 +31,7 @@ class DataBaseManager:
         self._execute(f"""DROP TABLE {table_name};""")
 
     
-    def add_data(self, table_name: str, data: str):
+    def add_data(self, table_name: str, data: Optional[str]=None):
         date = self.curent_date()
         values = date, data
         placeholders = ','.join('?' * len(values))
@@ -43,9 +44,12 @@ class DataBaseManager:
         self.conn.commit()
 
 
-    def retrieve_data(self, table_name: str):
-        query = f"""SELECT * FROM {table_name} ORDER BY id"""
-        results = self._execute(query).fetchall()
+    def retrieve_data(self, table_name: str, date: Optional[str]):
+        query = f"""SELECT * FROM {table_name}"""
+        
+        if date:
+            query += f""" WHERE date = ?"""
+        query += f""" ORDER BY id"""
 
-        return results
+        return self._execute(query, [date]).fetchall()
 

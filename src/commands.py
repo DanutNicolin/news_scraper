@@ -7,9 +7,12 @@ from src.business import (
     create_table,
     check_if_title_in_db,
     add_title_in_db,
+    get_top_5,
     parsing_titles,
-    plot_data
+    digi24,
+    plot_top_5
     )
+from typing import Optional
 from src.utils import clear_screen
 import sys
 
@@ -49,7 +52,7 @@ class SearchKeyword:
         filtered_titles = []
 
         for title in all_titles:
-            if keyword in title:
+            if keyword in title.lower():
                 filtered_titles.append(title)
         return filtered_titles
 
@@ -77,8 +80,8 @@ class Exit:
 
 
 class GetDbTitles:
-    def execute(self, table_name:str):
-        titles = get_titles_from_db(table_name)
+    def execute(self, table_name:str, date:str=str(digi24.curent_date())):
+        titles = get_titles_from_db(table_name, date)
         return titles
         
 
@@ -109,4 +112,5 @@ class GetWordCount:
 class PlotData:
     def execute(self, table_name):
         data = GetWordCount().execute(table_name)
-        plot_data(data)
+        data = get_top_5(data)
+        plot_top_5(data)

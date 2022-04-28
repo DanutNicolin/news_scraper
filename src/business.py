@@ -1,6 +1,7 @@
 
-from src.scraper import Digi24
 from collections import defaultdict
+from typing import Optional
+from src.scraper import Digi24
 from src.database import DataBaseManager
 from matplotlib import pyplot as plt
 import re
@@ -17,8 +18,8 @@ def get_all_titles(scraper):
     return extracted_titles
 
 
-def get_titles_from_db(table_name: str):
-        db_data = db.retrieve_data(table_name)
+def get_titles_from_db(table_name: str, date: str=str(digi24.curent_date())):
+        db_data = db.retrieve_data(table_name, date)
         titles = []
         for title in db_data:
             titles.append(title[2].strip())
@@ -51,30 +52,48 @@ def parsing_titles(table_name: str):
     counts = defaultdict(int)
  
     for title in all_titles:
-        for word in re.findall('\w+', title):
+        for word in re.findall('\w+', title.lower()):
             if word in CONJUNCTIONS:
                 continue
             else:
                 counts[word] += 1
+
+    counts = sorted(counts.items(), key=lambda x:x[1])
     return dict(counts)
 
 
-def plot_data(data: dict):
+def get_top_5(words: dict):
+    # https://www.geeksforgeeks.org/python-n-largest-values-in-dictionary/ 
+    #curently not working
+
+    top_5 = {}
+
+    for index,word in enumerate(words.items()):
+        word = max(words.items(), key=lambda x: x[1])
+        top_5.setdefault(word)
+        words.pop(word.keys())
+        if index == 4:
+            break
+    return top_5
+
+
+def plot_top_5(data: dict):
+
 
     words = list(data.keys())
     count = list(data.values())
 
     plt.plot(words, count)
 
-    plt.xlabel('Number of ocurencyes')
-    plt.ylabel('Words')
+    plt.xlabel('Words')
+    plt.ylabel('Number of ocurencyes')
     plt.title('Word frequency count')
 
     plt.show()
 
 
-# def top_5_words(table_name: str):
-#     all_titles = get_titles_from_db(table_name)
 
+a = {'a': 1, 'b':2, 'c':3, 'd':4, 'e':5, 'f':6}
 
-
+top = get_top_5(a)
+print(top)
