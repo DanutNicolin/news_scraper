@@ -7,10 +7,10 @@ from src.business import (
     create_table,
     check_if_title_in_db,
     add_title_in_db,
-    get_top_5,
+    get_top_words,
     parsing_titles,
     digi24,
-    plot_top_5
+    plot_data
     )
 from typing import Optional
 from src.utils import clear_screen
@@ -58,7 +58,8 @@ class SearchKeyword:
 
 
 class PrintKeywords:
-    def execute(self, scraper, keyword:str):
+    def execute(self, scraper):
+        keyword = input('Input keyword: ')
         filtered_titles = SearchKeyword().execute(scraper, keyword)
         clear_screen()
         if len(filtered_titles)>0:
@@ -80,7 +81,7 @@ class Exit:
 
 
 class GetDbTitles:
-    def execute(self, table_name:str, date:str=str(digi24.curent_date())):
+    def execute(self, table_name:str, date: Optional[str]=str(digi24.curent_date())):
         titles = get_titles_from_db(table_name, date)
         return titles
         
@@ -111,6 +112,7 @@ class GetWordCount:
 
 class PlotData:
     def execute(self, table_name):
+        n = int(input('Number of words to plot: '))
         data = GetWordCount().execute(table_name)
-        data = get_top_5(data)
-        plot_top_5(data)
+        data = get_top_words(data, n)
+        plot_data(data)

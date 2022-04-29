@@ -4,7 +4,7 @@ from src.presentation import (
  get_option_choice, 
  print_menu, 
  get_scraper, 
- get_scraper_and_keyword)
+ )
 
 from src.commands import PrintAllTitles, PrintKeywords, Exit, WriteToDataBase, PlotData
 from src.utils import clear_terminal
@@ -15,7 +15,7 @@ def loop():
     with clear_terminal():      
         options = {
             'A': Option('- Print todays news', PrintAllTitles(), prep_call=get_scraper),
-            'B': Option('- Search by key word', PrintKeywords(), prep_call=get_scraper_and_keyword),
+            'B': Option('- Search by key word', PrintKeywords(), prep_call=get_scraper),
             'C': Option('- Add all titles to database', WriteToDataBase(), prep_call=get_scraper),
             'D': Option('- Plot words count', PlotData(), prep_call=get_scraper),
             'X': Option('- Exit', Exit())

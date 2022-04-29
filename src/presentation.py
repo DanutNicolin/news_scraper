@@ -42,7 +42,6 @@ class Option:
                 message = self.command.execute(data)
             except:
                 message = self.command.execute(data[0], data[1])
-
         else:
             message = self.command.execute()
         print()
@@ -59,29 +58,18 @@ def print_websites():
     print()
 
 
-def get_scraper():
-    print_websites()
-    chosen_option = get_option_choice(scrapers)
-    return chosen_option
-
-    
-def get_keyword():
-    keyword = input('Input keyword: ')
-    return keyword
-
-
-def get_scraper_and_keyword():
-    scraper = get_scraper()
-    keyword = get_keyword()
-    data = (scraper, keyword)
-    return data
-
-
 def print_menu(menu: dict):
     print('')
     for (option, name) in zip(menu.keys(), menu.values()):
         print(f'{option} {name}')
     print('')
+
+
+
+def get_scraper():
+    print_websites()
+    chosen_option = get_option_choice(scrapers)
+    return chosen_option
 
 
 
