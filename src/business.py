@@ -5,6 +5,7 @@ from src.scraper import Digi24
 from src.database import DataBaseManager
 from matplotlib import pyplot as plt
 from operator import itemgetter
+from src.utils import clear_screen
 import re
 
 
@@ -28,6 +29,24 @@ def get_option_choice(options: dict):
     return options[choice.upper()]
 
 
+def get_date():
+    options = {'A': '- Curent date', 'B': '- Input date', 'C': '- All the dates'}
+    for option in options.items():
+        print(option[0], option[1])
+    print('')
+        
+    choice = get_option_choice(options)
+    clear_screen()
+    
+    if choice == '- All the dates':
+        return None
+    if choice == '- Curent date':
+        return curent_date
+    if choice == '- Input date':
+        date = str(input('Input date (dd.mm.yyyy): '))
+        return date
+
+
 
 
 def get_all_titles(scraper):
@@ -38,15 +57,22 @@ def get_all_titles(scraper):
     return extracted_titles
 
 
+def get_date_from_db(table_name: str):
+    db_data = db.retrieve_data(table_name)
+
+    dates = []
+    for date in db_data:
+        dates.append(date[1])
+    return dates
+
+
+
 def get_titles_from_db(table_name: str, date: Optional[str]=None):
-    if date:
-        db_data = db.retrieve_data(table_name, date)
-    else:
-        db_data = db.retrieve_data(table_name)
+    db_data = db.retrieve_data(table_name, date)
 
     titles = []
-    for title in db_data:
-        titles.append(title[2].strip())
+    for data in db_data:
+        titles.append(data[2].strip())
     return titles
 
 
@@ -68,15 +94,15 @@ def add_title_in_db(scraper, title: str):
     db.add_data(str(scraper), title)
 
 
-def parsing_titles(table_name: str):
+def parse_titles(titles: list):
     CONJUNCTIONS = ['și', 'nici', 'de', 'sau', 'ori', 'dacă', 'fiindcă', 'iar', 'dar', 'însă', 'ci', 'deci', 'că', 'să', 'ca', 'căci', 'deși', 'încât', 'deoarece',
      'ba', 'fie', 'cum', 'cu', 'cât', 'precum', 'așadar', 'prin', 'urmare', 'în', 'la', 'au', 'o', 'a', 'un', 'din', 'pentru', 'ce', 'cum', 'pe', 'sub', 'care', 'fost', 's',
-     'înainte', 'după','ar', 'la', 'din', 'te', 'mai', 'vai', 'se', 'al', 'fi', 'nu', 'da', 'va', 'vă', 'îl', 'este', 'si', 'e', 'sunt', 'despre']
+     'înainte', 'după','ar', 'la', 'din', 'te', 'mai', 'vai', 'se', 'al', 'fi', 'nu', 'da', 'va', 'vă', 'îl', 'este', 'si', 'e', 'sunt', 'despre', 'i', 'asupra', 'putea', 'vor']
 
-    all_titles = get_titles_from_db(table_name)
+    # all_titles = get_titles_from_db(table_name, date)
     counts = defaultdict(int)
  
-    for title in all_titles:
+    for title in titles:
         for word in re.findall('\w+', title.lower()):
             if word in CONJUNCTIONS:
                 continue
@@ -91,7 +117,12 @@ def get_top_words(words: dict, n: int):
     return top_n_words
 
 
-def plot_data(data: dict):
+def plot_data(data: dict, date: str, db_date: list):
+    db_date = [db_date[0], db_date[-1]]
+
+    if date == None:
+        date = f' between {db_date[0]} - {db_date[1]}'
+
     words = list(data.keys())
     count = list(data.values())
 
@@ -99,6 +130,6 @@ def plot_data(data: dict):
 
     plt.xlabel('Words')
     plt.ylabel('Number of ocurencyes')
-    plt.title(f'Word frequency count {curent_date}')
+    plt.title(f'Word frequency {date}')
 
     plt.show()

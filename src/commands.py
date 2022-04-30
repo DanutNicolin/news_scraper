@@ -1,15 +1,19 @@
 
-from matplotlib.pyplot import plot
+from datetime import date
+from pkgutil import get_data
+from matplotlib.pyplot import get, plot
 from src.business import (
     get_all_titles,
+    get_date_from_db,
     get_titles_from_db,
     create_table,
     check_if_title_in_db,
     add_title_in_db,
     get_top_words,
-    parsing_titles,
+    parse_titles,
     digi24,
-    plot_data
+    plot_data,
+    get_date
     )
 from typing import Optional
 from src.utils import clear_screen
@@ -76,20 +80,20 @@ class Exit:
         sys.exit()
 
 
-
+class GetDate:
+    def execute(self):
+        date = get_date()
+        return date
 
 
 class GetDbTitles:
     def execute(self, table_name:str, date: Optional[str]=None):
-        if date == None:
-            titles = get_titles_from_db(table_name)
-        else:
-            titles = get_titles_from_db(table_name, date)
+        titles = get_titles_from_db(table_name, date)
         return titles
         
 
 class WriteToDataBase:
-  def execute(self, scraper):
+    def execute(self, scraper):
         create_table(str(scraper))
 
         scraper_titles = GetAllTitles().execute(scraper)
@@ -107,14 +111,32 @@ class WriteToDataBase:
 
 
 
-class GetWordCount:
+# class GetWordCount:
+#     def execute(self, table_name):
+#         counted_words = parsing_titles(str(table_name))
+#         return counted_words
+
+
+class GetCountedWords:
     def execute(self, table_name):
-        counted_words = parsing_titles(str(table_name))
-        return counted_words
+        clear_screen()
+        date = GetDate().execute()
+        titles = GetDbTitles().execute(str(table_name), date)
+
+        parsed_titles = parse_titles(titles)
+        return (parsed_titles, date)
+
 
 class PlotData:
     def execute(self, table_name):
+        clear_screen()
         n = int(input('Number of words to plot: '))
-        data = GetWordCount().execute(table_name)
-        data = get_top_words(data, n)
-        plot_data(data)
+
+        data_and_date = GetCountedWords().execute(table_name)
+        data = data_and_date[0].items()
+        date = data_and_date[1]
+
+        db_date = get_date_from_db(table_name)
+        
+        data = (get_top_words(dict(data), n))
+        plot_data(data, date, db_date)
