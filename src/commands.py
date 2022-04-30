@@ -3,7 +3,6 @@ from matplotlib.pyplot import plot
 from src.business import (
     get_all_titles,
     get_titles_from_db,
-    db,
     create_table,
     check_if_title_in_db,
     add_title_in_db,
@@ -81,8 +80,11 @@ class Exit:
 
 
 class GetDbTitles:
-    def execute(self, table_name:str, date: Optional[str]=str(digi24.curent_date())):
-        titles = get_titles_from_db(table_name, date)
+    def execute(self, table_name:str, date: Optional[str]=None):
+        if date == None:
+            titles = get_titles_from_db(table_name)
+        else:
+            titles = get_titles_from_db(table_name, date)
         return titles
         
 
@@ -91,7 +93,7 @@ class WriteToDataBase:
         create_table(str(scraper))
 
         scraper_titles = GetAllTitles().execute(scraper)
-        db_titles = GetDbTitles().execute(str(scraper))
+        db_titles = GetDbTitles().execute(str(scraper), date=str(digi24.curent_date()))
 
         titles_not_in_db = check_if_title_in_db(scraper_titles, db_titles)
 

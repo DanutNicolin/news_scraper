@@ -44,12 +44,14 @@ class DataBaseManager:
         self.conn.commit()
 
 
-    def retrieve_data(self, table_name: str, date: Optional[str]):
+    def retrieve_data(self, table_name: str, date: Optional[str]=None):
         query = f"""SELECT * FROM {table_name}"""
         
         if date:
             query += f""" WHERE date = ?"""
-        query += f""" ORDER BY id"""
-
-        return self._execute(query, [date]).fetchall()
+            query += f""" ORDER BY id"""
+            return self._execute(query, [date]).fetchall()
+        else:
+            query += f""" ORDER BY id"""
+            return self._execute(query).fetchall()
 

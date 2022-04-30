@@ -1,10 +1,12 @@
 
 from src.presentation import (
  Option,
- get_option_choice, 
  print_menu, 
  get_scraper, 
  )
+from src.business import (
+get_option_choice
+)
 
 from src.commands import PrintAllTitles, PrintKeywords, Exit, WriteToDataBase, PlotData
 from src.utils import clear_terminal
