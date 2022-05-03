@@ -99,7 +99,6 @@ def parse_titles(titles: list):
      'ba', 'fie', 'cum', 'cu', 'cât', 'precum', 'așadar', 'prin', 'urmare', 'în', 'la', 'au', 'o', 'a', 'un', 'din', 'pentru', 'ce', 'cum', 'pe', 'sub', 'care', 'fost', 's',
      'înainte', 'după','ar', 'la', 'din', 'te', 'mai', 'vai', 'se', 'al', 'fi', 'nu', 'da', 'va', 'vă', 'îl', 'este', 'si', 'e', 'sunt', 'despre', 'i', 'asupra', 'putea', 'vor']
 
-    # all_titles = get_titles_from_db(table_name, date)
     counts = defaultdict(int)
  
     for title in titles:
@@ -108,7 +107,6 @@ def parse_titles(titles: list):
                 continue
             else:
                 counts[word] += 1
-    # counts = sorted(counts.items(), key=lambda x:x[1])
     return dict(counts)
 
 

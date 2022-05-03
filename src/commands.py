@@ -1,7 +1,4 @@
 
-from datetime import date
-from pkgutil import get_data
-from matplotlib.pyplot import get, plot
 from src.business import (
     get_all_titles,
     get_date_from_db,
@@ -111,10 +108,6 @@ class WriteToDataBase:
 
 
 
-# class GetWordCount:
-#     def execute(self, table_name):
-#         counted_words = parsing_titles(str(table_name))
-#         return counted_words
 
 
 class GetCountedWords:
