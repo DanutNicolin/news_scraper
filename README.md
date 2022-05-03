@@ -1,3 +1,8 @@
 # news_scraper
 
-Get the latest news, filter by key words, store news in a database and plot the most used words to see the connections between the major news outlets.
+*Get the latest news 
+*Filter by key words 
+*Store news in a database
+*Plot the most used words 
+
+See the connections between the major news outlets in a simple, hassle free way.
